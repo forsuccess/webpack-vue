@@ -1,10 +1,24 @@
 <html>
 <head>
-
+    <meta charset=utf-8>
+    <link rel="stylesheet" href="page.css">
 </head>
 <body>
 <div id="app">
-    {{ message }}
+    <div class="newTask">
+        <input type="text" v-model="newTodo" @keypress.enter="addTodo">
+    </div>
+    <ol class="todos">
+        <li v-for="todo in todoList" :class="{yes:todo.done}">
+            <input type="checkbox" v-model="todo.done">
+            <span class="content">{{ todo.title }}</span>
+
+            <span  v-if="todo.done">已完成</span>
+            <span   v-else>未完成</span>
+            <span class="time">{{ todo.createdAt }}</span>
+            <button @click="removeTodo(todo)">X</button>  <!-- 👈 加了一个按钮 -->
+        </li>
+    </ol>
 </div>
 <script src="bundle.js"></script>
 </body>

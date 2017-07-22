@@ -83,7 +83,45 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var app = new _vue2.default({
     el: '#app',
     data: {
-        message: 'Hello world!'
+        newTodo: '',
+        todoList: []
+    },
+    created: function created() {
+        var _this = this;
+
+        // onbeforeunload文档：https://developer.mozilla.org/zh-CN/docs/Web/API/Window/onbeforeunload
+        window.onbeforeunload = function () {
+            var dataString = JSON.stringify(_this.todoList); // JSON 文档: https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/JSON
+            window.localStorage.setItem('myTodos', dataString); // 看文档https://developer.mozilla.org/zh-CN/docs/Web/API/Window/localStorage
+        };
+
+        var oldDataString = window.localStorage.getItem('myTodos');
+        var oldData = JSON.parse(oldDataString);
+        this.todoList = oldData || [];
+    },
+    methods: {
+        addTodo: function addTodo() {
+            var time = new Date(),
+                year = time.getFullYear(),
+                month = time.getMonth() + 1,
+                day = time.getDate(),
+                hour = time.getHours(),
+                minute = time.getMinutes();
+            if (minute < 10) {
+                minute = "0" + minute;
+            }
+            var timeStr = year + '-' + month + '-' + day + ' ' + hour + ':' + minute;
+            this.todoList.push({
+                title: this.newTodo,
+                createdAt: timeStr,
+                done: false // 添加一个 done 属性
+            });
+            this.newTodo = ''; // 变成空
+        },
+        removeTodo: function removeTodo(todo) {
+            var index = this.todoList.indexOf(todo); // Array.prototype.indexOf 是 ES 5 新加的 API
+            this.todoList.splice(index, 1); // 不懂 splice？赶紧看 MDN 文档！
+        }
     }
 });
 
